@@ -61,22 +61,22 @@ def list_services():
 	return " ".join(services.keys())
 
 def list_service_config(serv):
-	return " ".join(services[serv].keys())
+	return " ".join(services.get(serv,{}).keys())
 
 def get_service_config(serv, param):
-	return services[serv][param]
+	return services.get(serv,{}).get(param,"")
 
 def list_types():
 	return " ".join(types.keys())
 
 def list_type(type):
-	return " ".join(types[type].keys())
+	return " ".join(types.get(type,{}).keys())
 
 def list_resource_config(type, res):
-	return " ".join(types[type][res].keys())
+	return " ".join(types.get(type,{}).get(res, {}).keys())
 
 def get_resource_config(type, res, param):
-	return types[type][res].get(param, "")
+	return types.get(type,{}).get(res, {}).get(param, "")
 
 if __name__ == "__main__":
 	get_metadata()
@@ -90,14 +90,14 @@ if __name__ == "__main__":
 				print_usage("This option requires no parameters")
 
 		elif arg == "-lsc" or arg == "--list-service-config":
-			if len(sys.argv) == 2:
-				print(list_service_config())
+			if len(sys.argv) == 3:
+				print(list_service_config(sys.argv[2]))
 			else:
 				print_usage("This option requires 1 parameter")
 
 		elif arg == "-sc" or arg == "--service-config":
-			if len(sys.argv) == 2:
-				print(get_service_config())
+			if len(sys.argv) == 4:
+				print(get_service_config(sys.argv[2], sys.argv[3]))
 			else:
 				print_usage("This option requires 2 parameters")
 
