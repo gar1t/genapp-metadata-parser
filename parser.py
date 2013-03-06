@@ -3,13 +3,11 @@
 import json
 import sys
 import os
-from pprint import pprint
 
 services = {}
 types = {}
-
 def get_metadata():
-	json_data=open(os.getenv("app_dir") + "/metadata.json")
+	json_data=open(os.getenv("genapp_dir") + "/metadata.json")
 	data = json.load(json_data)
 
 	for res in data["app"]["resources"]:
