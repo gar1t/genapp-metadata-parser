@@ -6,9 +6,14 @@ import os
 
 services = {}
 types = {}
+env = {}
+
 def get_metadata():
 	json_data=open(os.getenv("genapp_dir") + "/metadata.json")
 	data = json.load(json_data)
+
+	for key in data["app"]["env"].keys():
+		env[key] = data["app"]["env"][key]
 
 	for res in data["app"]["resources"]:
 		name = res.get("name", None)
@@ -18,12 +23,14 @@ def get_metadata():
 
 		if type == None:
 			services[service] = config
-
 		else:
+			if type == "datasource":
+				type = "database"
 			if types.get(type, None) == None:
 				types[type] = {}
 
 			types[type][name] = config
+
 
 def print_usage(err):
 	print("ERROR: " + err)
@@ -32,6 +39,12 @@ def print_usage(err):
 	print("python parser.py FLAG [PARAMS]")
 
 	print("--- FLAGS ---")
+
+	print("{-le | --list-environment}")
+	print("\tList all environment variables")
+
+	print("{-e | --environment} VARIABLE [DEFAULT]")
+	print("\tReturn the given environment variable")
 
 	print("{-ls | --list-services}")
 	print("\tList all services for the account")
@@ -54,6 +67,15 @@ def print_usage(err):
 	print("{-rc | --resource-config} TYPE_NAME RESOURCE_NAME CONFIG_OPTION")
 	print("\tGet the value for the given option of a resource and type")
 	sys.exit(1)
+
+def list_env():
+	return " ".join(env.keys())
+
+def get_env(var):
+	return env[var]
+
+def get_env_def(var, default):
+	return env.get(var, default)
 
 def list_services():
 	return " ".join(services.keys())
@@ -81,7 +103,22 @@ if __name__ == "__main__":
 
 	if len(sys.argv) > 1:
 		arg = sys.argv[1]
-		if arg == "-ls" or arg == "--list-services":
+
+		if arg == "-le" or arg == "--list-environment":
+			if len(sys.argv) == 2:
+				print(list_env())
+			else:
+				print_usage("This option requires no parameters")
+
+		elif arg == "-e" or arg == "--environment":
+			if len(sys.argv) == 3:
+				print(get_env(sys.argv[2]))
+			elif len(sys.argv) == 4:
+				print(get_env_def(sys.argv[2], sys.argv[3]))
+			else:
+				print_usage("This option requires 1 or 2 parameters")
+
+		elif arg == "-ls" or arg == "--list-services":
 			if len(sys.argv) == 2:
 				print(list_services())
 			else:
