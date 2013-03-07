@@ -3,6 +3,7 @@
 import json
 import sys
 import os
+import re
 
 services = {}
 types = {}
@@ -26,6 +27,16 @@ def get_metadata():
 		else:
 			if type == "datasource":
 				type = "database"
+			if type == "database":
+				url = config["DATABASE_URL"]
+				db = re.sub(r'.*\/', '', url)
+				host = re.sub(r'jdbc:mysql:\/\/', '', url)
+				host = re.sub(r':[0-9]*\/%s'%db, '', host)
+				port = re.sub('jdbc:mysql:\/\/%s:'%host, '', url)
+				port = re.sub(r'\/' + db, '', port)
+				config["DATABASE_DB"] = db
+				config["DATABASE_HOST"] = host
+				config["DATABASE_PORT"] = port
 			if types.get(type, None) == None:
 				types[type] = {}
 
