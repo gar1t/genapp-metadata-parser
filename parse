@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+current="$(dirname $0)"
+python "$current/parser.py" $@
