@@ -1,30 +1,48 @@
 # Metadata Parser for GenApp
 
-This simple Python3 script will parse the metadata into bash-friendly bits.
+This simple Python3 script will parse the metadata into bash-friendly bits
+by converting arrays into maps.
 
 The data is returned in space-delimited strings.
 
-### Usage
-python parser.py FLAG [PARAMS]
+## Usage
+Requires Python
 
-### Flags
-####{-ls | --list-services}
-List all services for the account
+	./parse key1 key2 key3
 
-####{-lsc | --list-service-config} SERVICE_NAME
-List all configuration options for given service
+## Examples:
 
-####{-sc | --service-config} SERVICE_NAME CONFIG_OPTION
-Get the value associated to the given option for the service
+	# Gets services activated for this application.
+	$ ./parse services
+	sendgrid newrelic
 
-####{-lt | --list-types}
-List all resource types available for the application
 
-####{-t | --type} TYPE_NAME
-List the resources of the given type that are bound to the app
 
-####{-lrc | --list-resource-config} TYPE_NAME RESOURCE_NAME
-Get all configuration options for the given resource and type
+	# Gets resource types bound to this application.
+	$ ./parse resources
+	application email database
 
-####{-rc | --resource-config} TYPE_NAME RESOURCE_NAME CONFIG_OPTION
-Get the value for the given option of a resource and type
+
+
+	# Gets list of databases bound to this application.
+	$ ./parse resources database
+	binding1 binding2 binding3
+
+
+
+	# Gets configuration keys for the database binding1
+	$ ./parse resources database binding1 config
+	DATABASE_URL DATABASE_PORT DATABASE_USERNAME DATABASE_PASSWORD DATABASE_HOST 
+	DATABASE_DB
+
+
+
+	# Gets the database URL:
+	$ ./parse resources database binding1 config DATABASE_URL
+	mysql://some-domain.amazonaws.com:3306/my_db
+
+
+
+	# Get an environment parameter:
+	$ ./parse env debug
+	true
