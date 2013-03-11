@@ -14,12 +14,13 @@ def get_metadata():
 
     # This loop translates any arrays from the metadata
     # into maps for easier access.
-    for key in data["app"].keys():
-        val = data["app"][key]
-        if key == "resources":
+    for key in data.keys():
+        val = data[key]
+        if key == "app":
+            resource_arr = val["resources"]
             services = {}
             resources = {}
-            for entry in val:
+            for entry in resource_arr:
                 name = entry.get("name", None)
                 if name == None:
                     service = entry["service"]
@@ -48,7 +49,6 @@ def get_metadata():
                 metadata["services"] = services
             if resources != {}:
                 metadata["resources"] = resources
-
         elif key == "plugins":
             plugins = {}
             for entry in val:
@@ -72,7 +72,7 @@ def get_values(args, options):
                 current = current.get(arg, default)
             else:
                 return default
-                
+
     if isinstance(current, dict):
         return " ".join(current.keys())
     else:
