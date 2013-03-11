@@ -1,6 +1,6 @@
 #! /usr/local/bin/python
 
-import argparse
+from optparse import OptionParser
 import json
 import sys
 import os
@@ -60,10 +60,19 @@ def get_metadata():
         else:
             metadata[key] = val
 
-def get_values(args):
+def get_values(args, options):
+    default = options.default
     current = metadata
+
     for arg in args:
-        current = current[arg]
+        if default == None:
+            current = current[arg]
+        else:
+            if isinstance(current, dict):
+                current = current.get(arg, default)
+            else:
+                return default
+                
     if isinstance(current, dict):
         return " ".join(current.keys())
     else:
@@ -71,5 +80,10 @@ def get_values(args):
 
 if __name__ == "__main__":
     get_metadata()
-    sys.argv.pop(0)
-    print(get_values(sys.argv))
+
+    parser = OptionParser() 
+    parser.add_option("-d", "--default", 
+        help="Returns default value if search fails")
+    (options, args) = parser.parse_args()
+
+    print(get_values(args, options))
