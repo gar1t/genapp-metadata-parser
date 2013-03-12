@@ -46,3 +46,8 @@ Requires Python
 	# Get an environment parameter:
 	$ ./parse env debug
 	true
+
+
+## License
+
+This work is distributed under the Apache license, found in the LICENSE file.
